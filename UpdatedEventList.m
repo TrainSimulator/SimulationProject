@@ -3,39 +3,30 @@ function newEventList = UpdatedEventList(oldEventList, newEvent)
 
 % ============================================================================
 % DESCRIPTION
-%
 % usage: newEventList = UpdatedEventList(oldEventList, newEvent)
-%
 % Inserts "newEvent" into "oldEventList" (preserving an ascending time-ordering)
 % and returns the updated "newEventList". Note that "oldEventList" stays unchanged!
 %
 % ----------------------------------------------------------------------------
 % PARAMETERS
-%
-% oldEventList  the event list into which "newElement" is to be inserted
-% newEvent      the new event to be inserted
+% oldEventList: the event list into which "newElement" is to be inserted
+% newEvent: the new event to be inserted
 %
 % ---------------------------------------------------------------------------
 % RETURN VALUES
-%
-% newEventList  result of inserting "newEvent" into "newEventList" with ascending time ordering
+% newEventList: result of inserting "newEvent" into "newEventList" with ascending time ordering
 %
 % ============================================================================
 
 
-%
 % trivial insertion in case of an empty queue
-%
-
 if (isempty(oldEventList))
 	newEventList(1) = newEvent;
 	return
 end
 
-%
-% binary search for position where to update
-%
 
+% binary search for position where to update
 lower = 1;
 upper = size(oldEventList,2) + 1;
 
@@ -51,10 +42,7 @@ end
 
 pos = lower;
 
-%
 % insert new element at previously found position
-%
-
 if (pos == 1)
 	newEventList = [newEvent oldEventList];
 else
