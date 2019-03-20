@@ -1,14 +1,11 @@
 %% Simulation launch script
+clear
+close all
 
-% clean the workspace
-clear all; %Removes all variables, functions, and MEX-files from memory, leaving the workspace empty
-close all; % delete all figures whose handles are not hidden.
-clc; % clear command window
+tic;
 
-% Program
 scenario = NewScenario(1);
-
 [times, queues] = Simulation(scenario);
+plot(times, queues)
 
-% Plots
-PlotQueues(times, queues);
+toc
