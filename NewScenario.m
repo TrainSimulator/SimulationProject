@@ -42,7 +42,7 @@ scenario.TravelTimes = [40, 70, 60];
 % pregenerate train time table (it's enough for now...)
 %TODO: add 1st/2nd class nr. of seats
 if id == 1
-    scenario.timetable = 0:20:scenario.DemandDuration; 
+    scenario.timetable = 0:20:scenario.DemandDuration;
     % hard coded 4*500 max capacity (no 1st/2nd class separation)
     scenario.trains = 2000*ones(1, size(scenario.timetable, 2));
 elseif id == 2
