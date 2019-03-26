@@ -48,7 +48,7 @@ scenario.ClassOffPeak = [0 0.21 0.18 0.23;
 0 0 0 0];
 
 %TODO: add 1st/2nd class matrices
-scenario.TravelTimes = [0, 40, 70, 60];
+scenario.TravelTimes = [0, 40, 110, 170];
 
 % pregenerate train time table (it's enough for now...)
 %TODO: add 1st/2nd class nr. of seats
@@ -73,4 +73,9 @@ scenario.carriage(1:ntrains,1) = 1;
 scenario.carriage(1:ntrains,2) = 3;
 scenario.capacity(1:ntrains,1) = scenario.carriage(1:ntrains,1) * 300;
 scenario.capacity(1:ntrains,2) = scenario.carriage(1:ntrains,2) * 500;
+
+% Cost/Gain for tickets, empty seats and missed trains:
+scenario.ticket = [40 20]; % Ticket price per passenger per station
+scenario.missed = [30 10]; % Money lost for a passenger missing a train
+scenario.empty = [20 10]; % Money lost for empty seat per station
 end
