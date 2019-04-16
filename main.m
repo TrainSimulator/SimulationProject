@@ -1,14 +1,23 @@
 %% Simulation launch script
+clear
+close all
 
-% clean the workspace
-clear all; %Removes all variables, functions, and MEX-files from memory, leaving the workspace empty
-close all; % delete all figures whose handles are not hidden.
-clc; % clear command window
+tic;
 
-% Program
-scenario = NewScenario(1);
+rng default;
 
-[times, queues] = Simulation(scenario);
+scenario = NewScenario(2);
+[times, queues, waittime, gain, loss] = Simulation(scenario);
 
-% Plots
-PlotQueues(times, queues);
+profit = gain - loss;
+avgwaittime = mean(waittime);
+varwaittime = var(waittime);
+maxwaittime = max(waittime);
+minwaittime = min(waittime);
+waittime95perc = prctile(waittime,0.95);
+
+figure; plot(times/60, queues);
+figure; histogram(waittime);
+% figure; boxplot(waittime);
+
+toc

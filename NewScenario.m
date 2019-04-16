@@ -36,15 +36,26 @@ scenario.DemandOffPeak = [0, 0.4, 0.3, 0.5;
                           0, 0,   0.5, 0.3;
                           0, 0,   0,   0.5;
                           0, 0,   0,   0];
+                      
+scenario.ClassPeak = [0 0.13 0.15 0.17;
+0 0 0.21 0.18;
+0 0 0 0.32;
+0 0 0 0];
+
+scenario.ClassOffPeak = [0 0.21 0.18 0.23;
+0 0 0.24 0.23;
+0 0 0 0.19;
+0 0 0 0];
+
 %TODO: add 1st/2nd class matrices
-scenario.TravelTimes = [40, 70, 60];
+scenario.TravelTimes = [0, 40, 110, 170];
 
 % pregenerate train time table (it's enough for now...)
 %TODO: add 1st/2nd class nr. of seats
 if id == 1
     scenario.timetable = 0:20:scenario.DemandDuration;
     % hard coded 4*500 max capacity (no 1st/2nd class separation)
-    scenario.trains = 2000*ones(1, size(scenario.timetable, 2));
+%     scenario.trains = 2000*ones(1, size(scenario.timetable, 2));
 elseif id == 2
     scenario.timetable = unique([0:30:scenario.MorningPeak(1),...
                                  scenario.MorningPeak(1):15:scenario.MorningPeak(2),...
@@ -52,7 +63,19 @@ elseif id == 2
                                  scenario.EveningPeak(1):15:scenario.EveningPeak(2),...
                                  scenario.EveningPeak(2):30:scenario.DemandDuration]);
     % hard coded 4*500 max capacity (no 1st/2nd class separation)
-    scenario.trains = 2000*ones(1, size(scenario.timetable, 2));
+%     scenario.trains = 2000*ones(1, size(scenario.timetable, 2));
 end
 
+% Number carriages for the trains and their capacity, needs to be varied
+% in the optimization part of the project
+ntrains = length(scenario.timetable);
+scenario.carriage(1:ntrains,1) = 1;
+scenario.carriage(1:ntrains,2) = 3;
+scenario.capacity(1:ntrains,1) = scenario.carriage(1:ntrains,1) * 300;
+scenario.capacity(1:ntrains,2) = scenario.carriage(1:ntrains,2) * 500;
+
+% Cost/Gain for tickets, empty seats and missed trains:
+scenario.ticket = [40 20]; % Ticket price per passenger per station
+scenario.missed = [30 10]; % Money lost for a passenger missing a train
+scenario.empty = [20 10]; % Money lost for empty seat per station
 end
