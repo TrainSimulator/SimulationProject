@@ -23,8 +23,8 @@ function [newAverage, newVariance] = UpdatedStatistics(oldAverage, oldVariance, 
 % newAverage    the updated average including the new data
 % newVariance   the updated variance including the new data
 % ============================================================================
-iteration = iteration +1;
-newAverage = oldAverage + (newData - oldAverage)/iteration;
-newVariance = (1-1/(iteration-1))*oldVariance + iteration*(newAverage - oldAverage).^2;
+
+newAverage = oldAverage + (newData-oldAverage)/(iteration+1);
+newVariance = (1-1/iteration)*oldVariance + (iteration+1)*(newAverage-oldAverage).^2;
 
 end
