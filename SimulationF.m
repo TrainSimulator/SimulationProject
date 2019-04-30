@@ -64,7 +64,6 @@ for j = 1:nevents
             
             %% 2. Board train:
             if station ~= 4
-                % Here every class is equal TODO: do class management
                 nqueue = length(queue(station).p); % Number of passengers in station queue
                 npass = [length(trains(trainID,1).p) length(trains(trainID,2).p)]; % Number of passengers on train
                 i = 1;
