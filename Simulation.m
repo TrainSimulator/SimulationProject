@@ -9,7 +9,9 @@ function [times, queues, waittime, gain, loss] = Simulation(scenario)
 PEventList = PassengerEvents(scenario);
 TEventList = TrainEvents(scenario);
 EventList = [PEventList; TEventList];
-counter = length(EventList);
+
+npassengers = length(PEventList);
+nevents = length(EventList);
 ntrains = length(scenario.timetable);
 
 % Sort events for time:
@@ -20,8 +22,8 @@ queue(3).p = zeros(0,6);
 trains(ntrains,2).p = zeros(0,6);
 
 % Preallocate queue book keeping vectors
-queues = zeros(counter,3);
-times = zeros(counter,1);
+queues = zeros(nevents,3);
+times = zeros(nevents,1);
 
 % Indicators:
 waittime = [];
@@ -29,7 +31,7 @@ gain = 0;
 loss = 0;
 
 %% Handle event list:
-for j = 1:counter
+for j = 1:nevents
     % Get entries from Event:
     Event = EventList(j,:);
     t = Event(1);
