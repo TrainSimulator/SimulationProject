@@ -18,8 +18,8 @@ ntrains = length(scenario.timetable);
 [EventList, ~] = sortrows(EventList,1);
 
 % Preallocate queues for stations and trains
-queue(3).p = zeros(0,6);
-trains(ntrains,2).p = zeros(0,6);
+queue(3).p = zeros(0);
+trains(ntrains,2).p = zeros(0);
 
 % Preallocate queue book keeping vectors
 queues = zeros(nevents,3);
@@ -40,7 +40,7 @@ for j = 1:nevents
     
     switch type
         case 1 % Passenger generation
-            queue(station).p(end+1,:) = Event;
+            queue(station).p(end+1) = j;
         case 2 % Train arrival
             trainID = Event(5);
             %% 1. Empty train:
@@ -50,10 +50,10 @@ for j = 1:nevents
                 for class = 1:2
                     i = 1; % list iterator
                     while i <= npass(class)
-                        destination = trains(trainID,class).p(i,4);
+                        destination = EventList(trains(trainID,class).p(i),4);
                         if destination == station
                             % Remove passsenger from train
-                            trains(trainID,class).p(i,:) = [];
+                            trains(trainID,class).p(i) = [];
                             npass(class) = npass(class) - 1;
                         else
                             i = i + 1;
@@ -70,13 +70,13 @@ for j = 1:nevents
                 while i <= nqueue
                     % If passenger fits, put him on the train and remove
                     % from queue, add ticket price
-                    class = queue(station).p(i,6);
+                    class = EventList(queue(station).p(i),6);
                     if npass(class) < scenario.capacity(trainID,class)
-                        destination = queue(station).p(i,4);
+                        destination = EventList(queue(station).p(i),4);
                         gain = gain + scenario.ticket(class) * (destination - station);
-                        waittime(end+1) = t - queue(station).p(i,1);
-                        trains(trainID,class).p(end+1,:) = queue(station).p(i,:);
-                        queue(station).p(i,:) = [];
+                        waittime(end+1) = t - EventList(queue(station).p(i),1);
+                        trains(trainID,class).p(end+1) = queue(station).p(i);
+                        queue(station).p(i) = [];
                         nqueue = nqueue - 1;
                         npass(class) = npass(class) + 1;
                     else
