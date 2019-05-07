@@ -1,11 +1,11 @@
-%% Single run simulation launch script
+%% Multiple runs simulation launch script
 
 clear
 close all;
 
 tic
 
-nruns = 10;
+nruns = 100;
 
 % indicators:
 avg_queues = zeros(nruns,1);
@@ -13,8 +13,15 @@ avg_waittimes = zeros(nruns,1);
 max_waittimes = zeros(nruns,1);
 profits = zeros(nruns,1);
 
+params.FreqPeak = 4;
+params.FreqOffPeak = 2;
+params.CarriagesPeak = [1, 3];
+params.CarriagesOffPeak = [1, 3];
+params.ShiftPeakStart = 0;
+params.ShiftPeakEnd = 0;
+
+scenario = NewScenario(params);
 parfor i = 1:nruns
-    scenario = NewScenario(2);
     [times, queues, waittime, gain, loss] = SimulationF(scenario);
 
     avg_queues(i) = mean(mean(queues));
@@ -23,13 +30,17 @@ parfor i = 1:nruns
     profits(i) = gain-loss;
 end
 
-plotHistogram(avg_queues);
-plotHistogram(avg_waittimes);
-plotHistogram(max_waittimes);
-plotHistogram(profits);
-
-% disp(['profit: ' num2str(profits(end))])
-% plotHistogram(waittime);
-% ylabel('#passengers')
+% plotHistogram(avg_queues);
+% xlabel('average queue length')
+% ylabel('n')
+% plotHistogram(avg_waittimes);
+% xlabel('average waittime')
+% ylabel('n')
+% plotHistogram(max_waittimes);
+% xlabel('maximum waittime')
+% ylabel('n')
+% plotHistogram(profits);
+% xlabel('profits')
+% ylabel('n')
 
 toc

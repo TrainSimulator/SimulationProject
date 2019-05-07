@@ -1,4 +1,4 @@
-function [times, queues, waittime, gain, loss] = Simulation(scenario)
+function [times, queues, waittime, gain, loss] = SimulationF(scenario)
 
 % =========================================================================
 % DESCRIPTION
@@ -19,7 +19,8 @@ ntrains = length(scenario.timetable);
 
 % Preallocate queues for stations and trains
 queue(3).p = zeros(0);
-trains(ntrains,2).p = zeros(0);
+% trains(ntrains,2).p = zeros(0);
+trains = zeros(ntrains,2,3); % (trainID, class, destinations 1: Lausanne, 2: Bern, 3: Zuerich)
 
 % Preallocate queue book keeping vectors
 queues = zeros(nevents,3);
@@ -45,27 +46,12 @@ for j = 1:nevents
             trainID = Event(5);
             %% 1. Empty train:
             if station ~= 1
-                % If train is not empty check if passengers leave the train
-                npass = [length(trains(trainID,1).p) length(trains(trainID,2).p)]; % Number of passengers on train
-                for class = 1:2
-                    i = 1; % list iterator
-                    while i <= npass(class)
-                        destination = EventList(trains(trainID,class).p(i),4);
-                        if destination == station
-                            % Remove passsenger from train
-                            trains(trainID,class).p(i) = [];
-                            npass(class) = npass(class) - 1;
-                        else
-                            i = i + 1;
-                        end
-                    end
-                end
+                trains(trainID,:,station-1) = 0;
             end
-            
             %% 2. Board train:
             if station ~= 4
                 nqueue = length(queue(station).p); % Number of passengers in station queue
-                npass = [length(trains(trainID,1).p) length(trains(trainID,2).p)]; % Number of passengers on train
+                npass = [sum(trains(trainID,1,:)) sum(trains(trainID,2,:))];
                 i = 1;
                 while i <= nqueue
                     % If passenger fits, put him on the train and remove
@@ -75,7 +61,7 @@ for j = 1:nevents
                         destination = EventList(queue(station).p(i),4);
                         gain = gain + scenario.ticket(class) * (destination - station);
                         waittime(end+1) = t - EventList(queue(station).p(i),1);
-                        trains(trainID,class).p(end+1) = queue(station).p(i);
+                        trains(trainID,class,destination-1) = trains(trainID,class,destination-1) + 1;
                         queue(station).p(i) = [];
                         nqueue = nqueue - 1;
                         npass(class) = npass(class) + 1;
@@ -86,7 +72,6 @@ for j = 1:nevents
                     end
                 end
             end
-            
             %% 3. After boarding:
             % Cost for empty seats on train
             emptyseats = scenario.capacity(trainID,:) - npass;
