@@ -14,7 +14,7 @@ assert(feasible == 1);
 % run sim
 tic;
 scenario = NewScenario(params);
-[times, queues, waittime, gain, loss] = Simulation(scenario);
+[times, queues, waittime, gain, loss] = SimulationF(scenario);
 toc;
 
 % plot (/display) results
