@@ -1,4 +1,4 @@
-function [times, queues, waittime, gain, loss] = Simulation(scenario)
+function [times, queues, waittime, gain, loss, gainb, lossb] = Simulation(scenario)
 
 % =========================================================================
 % DESCRIPTION
@@ -24,6 +24,8 @@ trains(ntrains,2).p = zeros(0,6);
 % Preallocate queue book keeping vectors
 queues = zeros(nevents,3);
 times = zeros(nevents,1);
+gainb = zeros(nevents,1);
+lossb = zeros(nevents,1);
 
 % Indicators:
 waittime = [];
@@ -95,5 +97,7 @@ for j = 1:nevents
     %% Book keeping for each event:
     times(j) = t;
     queues(j,:) = [length(queue(1).p) length(queue(2).p) length(queue(3).p)];
+    gainb(j) = gain;
+    lossb(j) = loss;
 end
 end
