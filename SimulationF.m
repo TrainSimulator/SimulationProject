@@ -65,9 +65,9 @@ for j = 1:nevents
                 for class = 1:nclass
                     if nqueues(station,class) ~= 0
                         if fullq(class)
-                            ndest(class,:) = sum(EventList(queue(station,class).p,4) == 2:nstat);
+                            ndest(class,:) = sum(EventList(queue(station,class).p,4) == 2:nstat, 1);
                         else
-                            ndest(class,:) = sum(EventList(queue(station,class).p(1:space(class)),4) == 2:nstat);
+                            ndest(class,:) = sum(EventList(queue(station,class).p(1:space(class)),4) == 2:nstat, 1);
                         end
                         ntrans(class) = sum(ndest(class,:));
                         for dest = 1:nstat-1
