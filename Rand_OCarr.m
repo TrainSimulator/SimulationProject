@@ -1,4 +1,4 @@
-function params = Rand_OCarr(params, class, N)
+function newparams = Rand_OCarr(params, class, N)
 %% Change off peak time carriage comp
 %
 %% INPUT:
@@ -6,12 +6,13 @@ function params = Rand_OCarr(params, class, N)
 %  class - first or second class of carriages
 %  N - rate of change
 feasible = 0;
+newparams = params;
 while ~feasible
     if rand() > 0.5
-        params.CarriagesOffPeak(class) = params.CarriagesOffPeak(class) + N;
+        newparams.CarriagesOffPeak(class) = params.CarriagesOffPeak(class) + N;
     else
-        params.CarriagesOffPeak(class) = params.CarriagesOffPeak(class) - N;
+        newparams.CarriagesOffPeak(class) = params.CarriagesOffPeak(class) - N;
     end
-    feasible = CheckFeasibility(params);
+    feasible = CheckFeasibility(newparams);
 end
 end

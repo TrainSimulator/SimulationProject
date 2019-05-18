@@ -1,4 +1,4 @@
-function params = Rand_PCarr(params, class, N)
+function newparams = Rand_PCarr(params, class, N)
 %% Change peak time carriage comp
 %
 %% INPUT:
@@ -6,12 +6,13 @@ function params = Rand_PCarr(params, class, N)
 %  class - first or second class of carriages
 %  N - rate of change
 feasible = 0;
+newparams = params;
 while ~feasible
     if rand() > 0.5
-        params.CarriagesPeak(class) = params.CarriagesPeak(class) + N;
+        newparams.CarriagesPeak(class) = params.CarriagesPeak(class) + N;
     else
-        params.CarriagesPeak(class) = params.CarriagesPeak(class) - N;
+        newparams.CarriagesPeak(class) = params.CarriagesPeak(class) - N;
     end
-    feasible = CheckFeasibility(params);
+    feasible = CheckFeasibility(newparams);
 end
 end

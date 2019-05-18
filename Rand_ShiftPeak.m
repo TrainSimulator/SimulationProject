@@ -1,4 +1,4 @@
-function params = Rand_ShiftPeak(params, N)
+function newparams = Rand_ShiftPeak(params, N)
 %% Shift peak time intervall
 %
 %% INPUT:
@@ -6,13 +6,14 @@ function params = Rand_ShiftPeak(params, N)
 %  N - rate of change
 PeakDuration = params.ShiftPeakEnd - params.ShiftPeakStart;
 feasible = 0;
+newparams = params;
 while ~feasible
     if rand() > 0.5
-        params.ShiftPeakStart = params.ShiftPeakStart + N;
+        newparams.ShiftPeakStart = params.ShiftPeakStart + N;
     else
-        params.ShiftPeakStart = params.ShiftPeakStart - N;
+        newparams.ShiftPeakStart = params.ShiftPeakStart - N;
     end
-    params.ShiftPeakEnd = params.ShiftPeakStart + PeakDuration;
-    feasible = CheckFeasibility(params);
+    newparams.ShiftPeakEnd = newparams.ShiftPeakStart + PeakDuration;
+    feasible = CheckFeasibility(newparams);
 end
 end
