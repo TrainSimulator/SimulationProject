@@ -2,9 +2,9 @@
 % constrained opt: keep waittime below certain level and opt profit
 clear; close all; rng default;
 
-max_it = 100;  % max number of opt. iterations per waittime level (constraine)
+max_it = 1000;  % max number of opt. iterations per waittime level (constraine)
 nsims = 4;  % number of sims to run per 1 opt. iteration
-reruns = 5;
+reruns = 10;
 % waittime_ubs = 20:-1:10;  % constraints (waittime upper bounds)
 waittime_ubs = 20:-0.5:10;  % constraints (waittime upper bounds)
 nconstr = length(waittime_ubs); % Constraint levels
@@ -38,6 +38,7 @@ assert(feasible == 1);
 for i = 1:nconstr
     clvl(i).params = params;
     clvl(i).value = value;
+    clvl(i).it = 0;
 end
 disp(['Initial solution: waittime = ' num2str(value(:,1)) ', profit = ' num2str(value(:,2))])
 
@@ -81,7 +82,7 @@ for run = 1:reruns
             
             %% Execute simulations. If optimization values are improved keep the new parameters
             [objectives, ~, ~] = RunSims(candidate_params, nsims);
-            [clvl, improvement] = addToPareto(objectives, candidate_params, clvl, waittime_ubs);
+            [clvl, improvement] = addToPareto(objectives, candidate_params, clvl, waittime_ubs, total_it);
             if improvement
                 disp(['it = ' num2str(it) ', waittime = ' num2str(objectives(1)) ...
                     ', profit = ' num2str(objectives(2))])
