@@ -53,8 +53,8 @@ pareto = [];
 total_it = 1;
 
 % Load previous state:
-load('constrained_opt_it_447.mat')
-weights = weights_all(end,:);
+% load('constrained_opt_it_447.mat')
+% weights = weights_all(end,:);
 
 figure; hold on;
 for run = 1:reruns
