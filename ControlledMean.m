@@ -36,4 +36,4 @@ tmp = cov(data, controlData);
 c = -tmp(1, 2)/tmp(2, 2);
 newData = data + c*(controlData - expectedControl);
 avg = mean(newData);
-variance = var(newData);
+variance = var(newData,1);
