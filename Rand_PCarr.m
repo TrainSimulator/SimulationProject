@@ -8,6 +8,11 @@ function newparams = Rand_PCarr(params, class, N)
 feasible = 0;
 newparams = params;
 while ~feasible
+    % Fringe case that makes it otherwise impossible to do a change for N = 2:
+    if params.CarriagesPeak(1) + params.CarriagesPeak(2) > 4 && params.CarriagesPeak(class) == 1
+        N = 1;
+    end
+
     if rand() > 0.5
         newparams.CarriagesPeak(class) = params.CarriagesPeak(class) + N;
     else
