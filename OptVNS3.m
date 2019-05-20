@@ -2,17 +2,17 @@
 % constrained opt: keep waittime below certain level and opt profit
 clear; close all; rng default;
 
-max_it = 1000;  % max number of opt. iterations per waittime level (constraine)
-nsims = 4;  % number of sims to run per 1 opt. iteration
-reruns = 10;
+max_it = 50;  % max number of opt. iterations per waittime level (constraine)
+nsims = 12;  % number of sims to run per 1 opt. iteration
+reruns = 5;
 % waittime_ubs = 20:-1:10;  % constraints (waittime upper bounds)
-waittime_ubs = 20:-0.5:10;  % constraints (waittime upper bounds)
+waittime_ubs = 24:-0.5:6;  % constraints (waittime upper bounds)
 nconstr = length(waittime_ubs); % Constraint levels
 savename = 'constrained_opt';  % name of saved .mat file
 
 nneighbourhoods = 30;
 totalneighbours = nneighbourhoods + (nneighbourhoods-1)*(nneighbourhoods)/2;
-weights = 10000*ones(1, totalneighbours);
+weights = 100*ones(1, totalneighbours);
 
 totaltime = tic;
 
@@ -38,13 +38,25 @@ assert(feasible == 1);
 for i = 1:nconstr
     clvl(i).params = params;
     clvl(i).value = value;
-    clvl(i).it = 0;
+    clvl(i).iteration = 0;
+    clvl(i).weights = weights;
 end
 disp(['Initial solution: waittime = ' num2str(value(:,1)) ', profit = ' num2str(value(:,2))])
 
-figure; hold on;
 params_all = params;
+values_all = value;
+weights_all = weights;
+params_improve = params;
+values_improve = value;
+it_improve = 0;
+pareto = [];
 total_it = 1;
+
+% Load previous state:
+load('constrained_opt_it_447.mat')
+weights = weights_all(end,:);
+
+figure; hold on;
 for run = 1:reruns
     for cidx = 1:nconstr
         waittime_ub = waittime_ubs(cidx);
@@ -82,23 +94,34 @@ for run = 1:reruns
             
             %% Execute simulations. If optimization values are improved keep the new parameters
             [objectives, ~, ~] = RunSims(candidate_params, nsims);
-            [clvl, improvement] = addToPareto(objectives, candidate_params, clvl, waittime_ubs, total_it);
+            [clvl, improvement] = addToPareto(objectives, candidate_params, clvl, waittime_ubs, total_it, weights);
             if improvement
                 disp(['it = ' num2str(it) ', waittime = ' num2str(objectives(1)) ...
                     ', profit = ' num2str(objectives(2))])
                 it = 1; % If improvement was done reset iteration counter
-                % Plotting:
+
+                % Plotting and save pareto state:
                 clf; hold on;
+                pareto(end+1, 1).params = 0;
                 for k = 1:nconstr
+                    pareto(end, k).params = clvl(k).params(end,:);
+                    pareto(end, k).values = clvl(k).value(end,:);
+                    
                     scatter(clvl(k).value(end,1), clvl(k).value(end,2));
                 end
                 drawnow
+
+                params_improve = [params_improve; params];
+                values_improve = [values_improve; value];
+                it_improve = [it_improve; (total_it + 1)];
                 % Adjust weights:
                 weights = AdjustWeights(weights, rnd, 1, level);
+                weights_all = [weights_all; weights];
             else
-                weights = AdjustWeights(weights, rnd, 0, level);
+%                 weights = AdjustWeights(weights, rnd, 0, level);
             end
             params_all = [params_all; params];
+            values_all = [values_all; objectives];
             it = it + 1;
             total_it = total_it + 1;
         end
@@ -108,7 +131,7 @@ for run = 1:reruns
         disp(['weights = ' num2str(weights)]);
     end
     savename_ = sprintf('constrained_opt_it_%i', total_it);
-    save(savename_, 'clvl');
+    save(savename_, 'clvl', 'pareto', 'params_all', 'values_all', 'params_improve', 'values_improve', 'it_improve', 'weights_all', 'total_it');
     fprintf('%s saved!\n', savename_);
 end
 
