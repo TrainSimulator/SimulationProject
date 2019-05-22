@@ -1,7 +1,7 @@
 function weights = AdjustWeights(weights, idx, pos, level)
 %% Adjust neighbourhood weights
 if pos
-    weights(idx) = weights(idx) + 1;
+    weights(idx) = weights(idx) + 2;
 end
 % totalneighbours = length(weights);
 % nneighbourhoods = 30;
