@@ -1,4 +1,4 @@
-function [times, queues, waittime, gain, loss] = SimulationF(scenario)
+function [times, queues, waittime, gain, loss, gainb, lossb] = SimulationF(scenario)
 
 % =========================================================================
 % DESCRIPTION
@@ -31,6 +31,8 @@ ntrans = zeros(1,2);
 % Preallocate queue book keeping vectors
 queues = zeros(nevents,nstat-1);
 times = zeros(nevents,1);
+gainb = zeros(nevents,1);
+lossb = zeros(nevents,1);
 
 % Indicators:
 waittime = [];
@@ -56,7 +58,7 @@ for j = 1:nevents
                 trains(trainID,:,station-1) = 0;
             end
             %% 2. Board train:
-            if station ~= nstat % If train at final stop
+            if station ~= nstat % If train not at final stop
                 npass = [sum(trains(trainID,1,:)) sum(trains(trainID,2,:))];
                 space = scenario.capacity(trainID,:) - npass;
                 fullq = space > nqueues(station,:);
@@ -83,15 +85,18 @@ for j = 1:nevents
                 waittime = [waittime addtimes];
                 npass = npass + ntrans;
                 nqueues(station,:) = nqueues(station,:) - ntrans;
+                
+                % Cost for passengers missing train:
                 loss = loss + sum(nqueues(station,:) .* scenario.missed);
+                % Cost for empty seats on train:
+                emptyseats = scenario.capacity(trainID,:) - npass;
+                loss = loss + sum(scenario.empty .* emptyseats);
             end
-            %% 3. After boarding:
-            % Cost for empty seats on train
-            emptyseats = scenario.capacity(trainID,:) - npass;
-            loss = loss + sum(scenario.empty .* emptyseats);
     end
     %% Book keeping for each event:
     times(j) = t;
     queues(j,:) = nqueues(:,1) + nqueues(:,2);
+    gainb(j) = gain;
+    lossb(j) = loss;
 end
 end

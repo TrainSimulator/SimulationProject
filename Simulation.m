@@ -87,12 +87,11 @@ for j = 1:nevents
                         i = i + 1;
                     end
                 end
+                %% 3. After boarding:
+                % Cost for empty seats on train
+                emptyseats = scenario.capacity(trainID,:) - npass;
+                loss = loss + sum(scenario.empty .* emptyseats);
             end
-            
-            %% 3. After boarding:
-            % Cost for empty seats on train
-            emptyseats = scenario.capacity(trainID,:) - npass;
-            loss = loss + sum(scenario.empty .* emptyseats);
     end
     %% Book keeping for each event:
     times(j) = t;
