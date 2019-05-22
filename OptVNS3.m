@@ -2,9 +2,9 @@
 % constrained opt: keep waittime below certain level and opt profit
 clear; close all; rng default;
 
-max_it = 50;  % max number of opt. iterations per waittime level (constraine)
+max_it = 100;  % max number of opt. iterations per waittime level (constraine)
 nsims = 12;  % number of sims to run per 1 opt. iteration
-reruns = 5;
+reruns = 50;
 % waittime_ubs = 20:-1:10;  % constraints (waittime upper bounds)
 waittime_ubs = 24:-0.5:6;  % constraints (waittime upper bounds)
 nconstr = length(waittime_ubs); % Constraint levels
@@ -65,7 +65,7 @@ for run = 1:reruns
         it = 1;
         while it < max_it
             %% Change randomizer level depending on number of iterations
-            if it > max_it / 2
+            if it > 2*max_it/3
                 level = 2;
             else
                 level = 1;
@@ -102,7 +102,8 @@ for run = 1:reruns
 
                 % Plotting and save pareto state:
                 clf; hold on;
-                pareto(end+1, 1).params = 0;
+                pareto(end+1, 1).it = (total_it + 1);
+                pareto(end, 1).constr = cidx;
                 for k = 1:nconstr
                     pareto(end, k).params = clvl(k).params(end,:);
                     pareto(end, k).values = clvl(k).value(end,:);
