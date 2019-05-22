@@ -30,10 +30,11 @@ function MSE = BootstrapMSE(data, statistic, parameter, draws)
 %            given data
 % ============================================================================
 
-n=length(data);
-MSE=0;
+n = length(data);
+MSE = 0;
 for k=1:draws
-    MSE = MSE+(parameter- statistic(randsample(data,n,true))).^2/draws;
+    MSE = MSE + (parameter - statistic(randsample(data,n,true)))^2;
 end
+MSE = MSE/draws;
 
 end
